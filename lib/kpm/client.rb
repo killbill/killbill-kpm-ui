@@ -9,16 +9,16 @@ module Killbill
       KILLBILL_OSGI_LOGGER_PREFIX = '/plugins/killbill-osgi-logger'
 
       class << self
-        def get_available_plugins(kb_version_maybe_snapshot, latest = true, options = {})
+        def get_available_plugins(kb_version_maybe_snapshot, latest, options)
           # Mostly useful for Kill Bill developers: get the latest version before the current snapshot
           # (we rarely deploy SNAPSHOT jars)
           captures = kb_version_maybe_snapshot.scan(/0.(\d+)(\.)?(\d+)?(-SNAPSHOT)?/)
           # [["20", ".", "1", "-SNAPSHOT"]]
           kb_version = if !captures.nil? && !captures.first.nil? && !captures.first[3].nil?
                          if captures.first[2].to_i.positive?
-                           '0.' + captures.first[0] + '.' + (captures.first[2].to_i - 1).to_s
+                           "0.#{captures.first[0]}.#{captures.first[2].to_i - 1}"
                          else
-                           '0.' + (captures.first[0].to_i - 1).to_s + '.0'
+                           "0.#{captures.first[0].to_i - 1}.0"
                          end
                        else
                          kb_version_maybe_snapshot
