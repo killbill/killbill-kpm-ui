@@ -17,7 +17,8 @@ Gem::Specification.new do |s|
   s.license     = 'MIT'
 
   s.files = Dir['{app,config,db,lib}/**/*'] + %w[MIT-LICENSE Rakefile README.md]
-  s.test_files = Dir['test/**/*']
+
+  s.metadata['rubygems_mfa_required'] = 'true'
 
   s.add_dependency 'font-awesome-rails'
   s.add_dependency 'jquery-datatables-rails'
@@ -26,11 +27,4 @@ Gem::Specification.new do |s|
   s.add_dependency 'ld-eventsource', '~> 1.0.1'
   s.add_dependency 'rails', '~> 7.0'
   s.add_dependency 'sass-rails'
-
-  s.add_development_dependency 'gem-release'
-  s.add_development_dependency 'json'
-  s.add_development_dependency 'listen'
-  s.add_development_dependency 'rake'
-  s.add_development_dependency 'rubocop'
-  s.add_development_dependency 'simplecov'
 end
