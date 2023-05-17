@@ -19,7 +19,7 @@ module KPM
           Rails.logger.warn("Unable to get latest plugins for version #{full_kb_version}: #{e.inspect}")
           plugins_metadata = ::Killbill::KPM::KPMClient.get_available_plugins('LATEST', false, options_for_klient)
         end
-        @plugins = Hash[plugins_metadata['plugins'].sort]
+        @plugins = plugins_metadata['plugins'].sort.to_h
       end
     end
 
@@ -40,7 +40,7 @@ module KPM
       first_node_version = nodes_info.first.kb_version
       nodes_by_kb_version = {}
       nodes_info.each do |node|
-        nodes_by_kb_version[node.kb_version] = "#{(nodes_by_kb_version[node.kb_version] || '')} #{node.node_name}"
+        nodes_by_kb_version[node.kb_version] = "#{nodes_by_kb_version[node.kb_version] || ''} #{node.node_name}"
       end
       [nodes_by_kb_version, first_node_version.scan(/(\d+\.\d+)(\.\d)?/).flatten[0]]
     end
