@@ -22,5 +22,6 @@ group :development do
   gem 'simplecov'
 end
 
+gem 'killbill-assets-ui', :github => 'killbill/killbill-assets-ui', :ref => 'main'
 # gem 'killbill-client', :github => 'killbill/killbill-client-ruby', :ref => 'master'
 # gem 'killbill-client', '3.2.0'
