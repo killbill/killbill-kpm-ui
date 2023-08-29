@@ -6,10 +6,9 @@
 # We need to explicitly require all of our dependencies listed in kpm.gemspec
 #
 # See also https://github.com/carlhuda/bundler/issues/49
-require 'jquery-rails'
-require 'jquery-datatables-rails'
-require 'font-awesome-rails'
+
 require 'killbill_client'
+require 'killbill-assets-ui'
 
 module KPM
   class Engine < ::Rails::Engine

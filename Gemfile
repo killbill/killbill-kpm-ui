@@ -15,6 +15,7 @@ gemspec
 group :development do
   gem 'gem-release'
   gem 'json'
+  gem 'killbill-client', github: 'killbill/killbill-client-ruby', ref: 'master'
   gem 'listen'
   gem 'puma'
   gem 'rake'
@@ -22,5 +23,5 @@ group :development do
   gem 'simplecov'
 end
 
-# gem 'killbill-client', :github => 'killbill/killbill-client-ruby', :ref => 'master'
-# gem 'killbill-client', '3.2.0'
+gem 'killbill-assets-ui', github: 'killbill/killbill-assets-ui', ref: 'main'
+# gem 'killbill-assets-ui', path: '../killbill-assets-ui'
