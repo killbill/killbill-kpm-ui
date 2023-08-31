@@ -35,11 +35,11 @@ rails t
 ```
 
 This plugin is using [killbill-assets-ui](https://github.com/killbill/killbill-assets-ui) to load the common assets.
-If you want to override the assets you can add it to ```app/assets/stylesheet/avatax/stylesheets``` or ```app/assets/stylesheet/avatax/javascripts```
+If you want to override the assets you can add it to ```app/assets/stylesheet/kpm``` or ```app/assets/javascripts/kpm```
 
-For integrate run with [killbill-admin-ui-standalone](https://github.com/killbill/killbill-admin-ui-standalone), please update the Gemfile to use Avatax locally
+For integrate run with [killbill-admin-ui-standalone](https://github.com/killbill/killbill-admin-ui-standalone), please update the Gemfile to use KPM locally
 
 ```
-# gem 'killbill-avatax'
-gem 'killbill-avatax', :path => '../killbill-avatax-ui'
+# gem 'killbill-kpm-ui'
+gem 'killbill-kpm-ui', :path => '../killbill-kpm-ui'
 ```
