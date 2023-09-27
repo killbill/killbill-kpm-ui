@@ -21,6 +21,7 @@ group :development do
   gem 'rake'
   gem 'rubocop'
   gem 'simplecov'
+  gem 'sprockets-rails'
 end
 
 gem 'killbill-assets-ui', github: 'killbill/killbill-assets-ui', ref: 'main'
