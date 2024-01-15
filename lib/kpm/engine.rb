@@ -8,7 +8,7 @@
 # See also https://github.com/carlhuda/bundler/issues/49
 
 require 'killbill_client'
-require 'killbill-assets-ui'
+require 'killbill_assets_ui'
 
 module KPM
   class Engine < ::Rails::Engine
