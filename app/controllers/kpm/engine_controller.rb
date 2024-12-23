@@ -4,6 +4,10 @@ module KPM
   class EngineController < ApplicationController
     layout :get_layout
 
+    rescue_from UncaughtThrowError do |exception|
+      redirect_to main_app.root_path if exception.tag == :warden
+    end
+
     def get_layout
       layout ||= KPM.config[:layout]
     end
