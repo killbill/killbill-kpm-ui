@@ -1,18 +1,104 @@
 <div class="search">
-
-  <div class="column-block">
-
+ <div class="">
     <h1>Official plugins</h1>
-
     <%= render :partial => 'kpm/plugins/plugins_table', :locals => {:plugins => @plugins} %>
-
-  </div>
-
-  <div class="column-block">
-
-    <h1>Upload plugin</h1>
-    <%= render 'form' %>
-
-  </div>
-
+  </div> 
 </div>
+
+<div class="register">
+  <div class="">
+        <div class="mx-auto" style="max-width: 37.5rem;">
+            <h5 class="upload-plugin-title border-bottom">
+                <span class="icon-container">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M16.25 3.74967L17.9167 2.08301" stroke="#414651" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M2.08301 17.9167L3.74967 16.25" stroke="#414651" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M9.82774 13.5773L6.00625 9.75578C5.68081 9.43036 5.15318 9.43036 4.82773 9.75578L2.91699 11.6665V14.3095C2.91699 14.7515 3.09258 15.1754 3.40515 15.488L4.0955 16.1784C4.40807 16.4909 4.83198 16.6665 5.27402 16.6665H7.91699L9.82774 14.7558C10.1532 14.4304 10.1532 13.9027 9.82774 13.5773Z" stroke="#414651" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M10.1728 5.24375C9.84736 5.56919 9.84736 6.09682 10.1728 6.42227L13.9943 10.2438C14.3197 10.5692 14.8474 10.5692 15.1728 10.2438L17.0835 8.33301V5.69003C17.0835 5.248 16.9079 4.82408 16.5954 4.51152L15.905 3.82117C15.5924 3.5086 15.1685 3.33301 14.7265 3.33301H12.0835L10.1728 5.24375Z" stroke="#414651" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M7.08301 10.4167L8.74967 8.75M9.58301 12.9167L11.2497 11.25" stroke="#414651" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+                Upload plugin
+            </h5>
+          <%= render 'form' %>
+
+        </div>
+    </div>
+</div>
+
+<style>
+  .upload-plugin-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    letter-spacing: 0;
+    color: #1B1C1E;
+    padding: 1rem 0;
+    margin-bottom: 1.5rem;
+  }
+
+  .icon-container {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border: 0.0625rem solid #D5D7DA;
+    border-radius: 0.375rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0.25rem;
+  }
+
+  .icon-container img {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  table {
+    overflow-x: auto;
+    min-width: 100%;
+  }
+
+  table th {
+    padding: 0.375rem 0.75rem !important;
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: #717680;
+    text-transform: capitalize;
+  }
+
+  table td {
+    font-weight: 500 !important;
+    font-size: 0.875rem !important;
+    padding: 1rem 0.5rem !important;
+    color: #535862 !important;
+    text-transform: capitalize !important;
+  }
+
+  table thead tr th::after,
+  table thead tr th::before {
+    content: "" !important;
+    display: inline-block !important;
+    width: 0.75rem !important;
+    height: 0.75rem !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: 0.75rem 0.75rem !important;
+    position: absolute !important;
+    right: 0.5rem !important;
+  }
+
+  table thead tr th::after {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M3 5.5L6 2.5L9 5.5' stroke='%23A4A7AE' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    top: 45% !important;
+    transform: translateY(-50%) !important;
+  }
+
+  table thead tr th::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M3 6.5L6 9.5L9 6.5' stroke='%23A4A7AE' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    bottom: 45% !important;
+    transform: translateY(50%) !important;
+  }
+</style>

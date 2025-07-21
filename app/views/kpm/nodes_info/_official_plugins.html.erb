@@ -1,0 +1,281 @@
+<div class="official-plugins-data">
+  <%- has_kpm_plugin = kpm_plugin_installed?(nodes_info) %>
+  <% nodes_info.each do |node_info| %>
+    <% unless (node_info.plugins_info || []).empty? %>
+      <% node_info.plugins_info.each do |plugin_info| %>
+        <div class="official-plugin ">
+          <div class="d-flex align-items-center">
+            <div class="official-plugin-icon"></div>
+            <div class="d-flex flex-column">
+              <h4><%= plugin_info.plugin_name %></h4> 
+              <p><%= plugin_info.version %> </p>
+            </div>
+          </div>
+          <div class="d-flex align-items-center">
+            <span class="label label-<%= plugin_info.state == 'RUNNING' ? 'success' : (plugin_info.state == 'INSTALLED' ? 'warning' : 'danger') %>"><%= plugin_info.state %></span>
+            <% if plugin_info.state == 'RUNNING' %>
+              <%= link_to '', plugin_stop_path(:plugin_key => plugin_info.plugin_key, :plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Stop', :remote => true, :class => 'plugin-link toggle-icon playpause running' %>
+            <% elsif plugin_info.state == 'INSTALLED' || plugin_info.state == 'STOPPED' %>
+              <%= link_to '', plugin_start_path(:plugin_key => plugin_info.plugin_key, :plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Start', :remote => true, :class => 'plugin-link toggle-icon playpause stopped' %>
+            <% end %>
+            <% if plugin_info.state == 'RUNNING' %>
+              <div class="dropdown">
+                <button class="dots-menu" onclick="toggleDropdown(this)">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10.0003 10.833C10.4606 10.833 10.8337 10.4599 10.8337 9.99967C10.8337 9.53944 10.4606 9.16634 10.0003 9.16634C9.54009 9.16634 9.16699 9.53944 9.16699 9.99967C9.16699 10.4599 9.54009 10.833 10.0003 10.833Z" stroke="#A4A7AE" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M10.0003 4.99967C10.4606 4.99967 10.8337 4.62658 10.8337 4.16634C10.8337 3.7061 10.4606 3.33301 10.0003 3.33301C9.54009 3.33301 9.16699 3.7061 9.16699 4.16634C9.16699 4.62658 9.54009 4.99967 10.0003 4.99967Z" stroke="#A4A7AE" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M10.0003 16.6663C10.4606 16.6663 10.8337 16.2932 10.8337 15.833C10.8337 15.3728 10.4606 14.9997 10.0003 14.9997C9.54009 14.9997 9.16699 15.3728 9.16699 15.833C9.16699 16.2932 9.54009 16.6663 10.0003 16.6663Z" stroke="#A4A7AE" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+
+                </button>
+                <div class="dropdown-content">
+                  <% unless plugin_info.plugin_key.nil? %>
+                    <%= link_to '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3.33366 13.3337H6.00033C6.36851 13.3337 6.66699 13.0352 6.66699 12.667V3.33366C6.66699 2.96547 6.36851 2.66699 6.00033 2.66699H3.33366C2.96547 2.66699 2.66699 2.96547 2.66699 3.33366V12.667C2.66699 13.0352 2.96547 13.3337 3.33366 13.3337Z" stroke="#A4A7AE" stroke-linejoin="round"/>
+                        <path d="M9.99967 13.3337H12.6663C13.0345 13.3337 13.333 13.0352 13.333 12.667V3.33366C13.333 2.96547 13.0345 2.66699 12.6663 2.66699H9.99967C9.63147 2.66699 9.33301 2.96547 9.33301 3.33366V12.667C9.33301 13.0352 9.63147 13.3337 9.99967 13.3337Z" stroke="#A4A7AE" stroke-linejoin="round"/>
+                        </svg> Pause'.html_safe, plugin_stop_path(:plugin_key => plugin_info.plugin_key, :plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Stop', :remote => true, :class => 'plugin-link' %>
+                  <% end %>
+                  <%= link_to '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M9.66667 1.33301L10.3333 3.03177C9.5386 2.60711 8.63073 2.36637 7.66667 2.36637C4.53705 2.36637 2 4.90342 2 8.03303C2 9.2271 2.36933 10.4194 3 11.333" stroke="#A4A7AE" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M5.66667 14.667L5 12.9682C5.79477 13.3928 6.7026 13.6336 7.66667 13.6336C10.7963 13.6336 13.3333 11.0966 13.3333 7.96695C13.3333 6.77282 12.964 5.58055 12.3333 4.66699" stroke="#A4A7AE" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                      Restart'.html_safe, plugin_restart_path(:plugin_key => plugin_info.plugin_key, :plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Restart', :remote => true, :class => 'plugin-link' %>
+                  <% if !plugin_info.version.nil? && has_kpm_plugin %>
+                    <%= link_to '<svg width="16" height="16" viewBox="0 0 448 512" fill="#A4A7AE" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M224 32C217.7 32 211.7 34.5 207 39L23 223C13.7 232.2 13.7 247.8 23 257C32.2 266.3 47.8 266.3 57 257L224 90.98L391 257C400.2 266.3 415.8 266.3 425 257C434.3 247.8 434.3 232.2 425 223L241 39C236.3 34.5 230.3 32 224 32ZM64 320C55.16 320 48 327.2 48 336V368C48 376.8 55.16 384 64 384H384C392.8 384 400 376.8 400 368V336C400 327.2 392.8 320 384 320H64Z"/>
+                      </svg> Uninstall'.html_safe, plugin_uninstall_path(:plugin_key => plugin_info.plugin_key, :plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Uninstall', :remote => true, :class => 'plugin-link' %>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>
+
+<style>
+  .official-plugins-data .official-plugin {
+    padding: 1rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 0.0625rem solid #E9EAEB;
+  }
+
+  .official-plugins-data .official-plugin:last-child {
+    border-bottom: none;
+  }
+
+  .official-plugin-icon {
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 0.0625rem solid #E9EAEB;
+    border-radius: 0.375rem;
+    padding: 0.25rem;
+    margin-right: 1rem;
+  }
+
+  .official-plugins-data .official-plugin h4 {
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    margin-bottom: 0;
+    color: #414651;
+  }
+
+  .official-plugins-data .official-plugin p {
+    font-weight: 400;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: #535862;
+    margin: 0;
+  }
+
+  .dots-menu {
+    padding: 0 !important;
+    width: 1.25rem;
+    height: 1.25rem;
+    background-color: transparent !important;
+    border: none !important;
+  }
+
+  .dots-menu:hover {
+    background-color: transparent !important;
+  }
+
+  .label-success {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.125rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: 3.90234375rem;
+    background-color: #ECFDF3;
+    border: 0.0625rem solid #DCFAE6;
+    color: #067647 !important;
+    font-weight: 500;
+    font-size: 0.75rem;
+    line-height: 1.125rem;
+    margin: 0;
+  }
+
+  .label-danger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.125rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: 3.90234375rem;
+    background-color: #FEF3F2;
+    border: 0.0625rem solid #FEE4E2;
+    color: #B42318 !important;
+    font-weight: 500;
+    font-size: 0.75rem;
+    line-height: 1.125rem;
+    margin: 0;
+  }
+
+  /* Toggle Switch */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 2.5rem;
+    height: 1.25rem;
+    margin-left: 0.75rem;
+  }
+
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    background-color: #ccc;
+    transition: 0.4s;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 1.25rem;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 0.875rem;
+    width: 0.875rem;
+    left: 0.1875rem;
+    bottom: 0.1875rem;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+  }
+
+  input:checked + .slider {
+    background-color: #1A73E8;
+  }
+
+  input:checked + .slider:before {
+    transform: translateX(1.25rem);
+  }
+
+  .dropdown {
+    position: relative;
+    display: inline-block;
+    margin-left: 0.75rem;
+  }
+
+  .dots-menu {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.125rem;
+    color: #6b7280;
+  }
+
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #fff;
+    min-width: 7.5rem;
+    box-shadow: 0 0.25rem 0.75rem rgba(0,0,0,0.15);
+    border-radius: 0.375rem;
+    overflow: hidden;
+    padding: 0.25rem 0;
+    z-index: 1000;
+  }
+
+  .dropdown-content a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.625rem;
+    font-size: 0.875rem;
+    text-decoration: none;
+    font-weight: 500;
+    line-height: 1.25rem;
+    color: #414651;
+  }
+
+  .dropdown-content a:hover {
+    background-color: #f2f2f2;
+  }
+
+  .dropdown.show .dropdown-content {
+    display: block;
+  }
+
+  .toggle-icon.playpause {
+    display: inline-block;
+    width: 2.5rem;
+    height: 1.25rem;
+    border-radius: 9999px;
+    position: relative;
+    margin-left: 0.75rem;
+    background-color: #F5F5F5;
+    transition: background-color 0.3s ease;
+  }
+
+  .toggle-icon.playpause::before {
+    content: '';
+    position: absolute;
+    top: 0.125rem;
+    left: 0.125rem;
+    width: 1rem;
+    height: 1rem;
+    background-color: #fff;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+  }
+
+  .toggle-icon.playpause.running {
+    background-color: #1A73E8;
+  }
+
+  .toggle-icon.playpause.running::before {
+    transform: translateX(1.25rem);
+  }
+</style>
+
+<%= javascript_tag do %>
+  function toggleDropdown(button) {
+    const dropdown = button.closest(".dropdown");
+    dropdown.classList.toggle("show");
+
+    // Close other dropdowns
+    document.querySelectorAll(".dropdown").forEach(d => {
+      if (d !== dropdown) d.classList.remove("show");
+    });
+  }
+
+  document.addEventListener("click", function (e) {
+    if (!e.target.closest(".dropdown")) {
+      document.querySelectorAll(".dropdown").forEach(d => d.classList.remove("show"));
+    }
+  });
+
+<% end %>
