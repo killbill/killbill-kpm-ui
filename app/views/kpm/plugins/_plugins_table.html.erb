@@ -12,7 +12,7 @@
         <tr>
           <td><%= name %></td>
           <td><%= version %></td>
-          <td><%= link_to '<i class="fa fa-cloud-download"></i>'.html_safe, plugin_install_path(:plugin_key => name), :method => :post, :title => 'Install' %></td>
+          <td><%= link_to 'Install', plugin_install_path(:plugin_key => name), :method => :post, :title => 'Install' %></td>
         </tr>
     <% end %>
     </tbody>
