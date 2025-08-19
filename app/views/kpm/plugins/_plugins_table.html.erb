@@ -1,5 +1,5 @@
 <% if @warning_message.blank? %>
-  <table id="plugins-table" class="table table-condensed table-striped mobile-data">
+  <table id="plugins-table">
     <thead>
     <tr>
       <th>Name</th>
@@ -12,7 +12,7 @@
         <tr>
           <td><%= name %></td>
           <td><%= version %></td>
-          <td><%= link_to '<i class="fa fa-cloud-download"></i>'.html_safe, plugin_install_path(:plugin_key => name), :method => :post, :title => 'Install' %></td>
+          <td><%= link_to 'Install', plugin_install_path(:plugin_key => name), :method => :post, :title => 'Install' %></td>
         </tr>
     <% end %>
     </tbody>

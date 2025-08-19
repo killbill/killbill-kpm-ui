@@ -1,4 +1,6 @@
-<table id="nodes-table" class="table table-condensed table-striped mobile-data">
+<%
+=begin%>
+ <table id="nodes-table" class="table table-condensed table-striped mobile-data">
   <thead>
   <tr>
     <th>Node</th>
@@ -63,4 +65,41 @@
       "ordering": false
     });
   });
+<% end %> 
+<%
+=end%>
+
+<%- has_kpm_plugin = kpm_plugin_installed?(nodes_info) %>
+<% nodes_info.each do |node_info| %>
+  <div class="row nodes-info">
+    <div class="col-sm-6">
+      <div class="mb-3">
+        <b>Node</b>
+        <p>
+          <%= node_info.node_name %>
+        </p>
+      </div>
+      <div>
+        <b>Kill Bill Version</b>
+        <p><%= node_info.kb_version %></p>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <% unless node_info.boot_time.blank? %>
+        <div class="mb-3">
+          <b>Uptime</b>
+          <p class="transaction-status"> <%= time_ago_in_words(DateTime.parse(node_info.boot_time)) %></p>
+        </div>
+      <% end %>
+      <div>
+        <b>Dependencies</b>
+        <p>
+          <div>API: <%= node_info.api_version %></div>
+          <div>Plugin API: <%= node_info.plugin_api_version %></div>
+          <div>Platform: <%= node_info.platform_version %></div>
+          <div>Commons: <%= node_info.common_version %></div>
+        </p>
+      </div>
+    </div>
+   </div>
 <% end %>

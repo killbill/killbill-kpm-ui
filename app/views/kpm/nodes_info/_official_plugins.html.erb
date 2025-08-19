@@ -1,0 +1,75 @@
+<div class="official-plugins-data">
+  <%- has_kpm_plugin = kpm_plugin_installed?(nodes_info) %>
+  <% nodes_info.each do |node_info| %>
+    <% unless (node_info.plugins_info || []).empty? %>
+      <% node_info.plugins_info.each do |plugin_info| %>
+        <div class="official-plugin ">
+          <div class="d-flex align-items-center">
+            <div class="official-plugin-icon"></div>
+            <div class="d-flex flex-column">
+              <h4><%= plugin_info.plugin_name %></h4> 
+              <p><%= plugin_info.version %> </p>
+            </div>
+          </div>
+          <div class="d-flex align-items-center">
+            <span class="label label-<%= plugin_info.state == 'RUNNING' ? 'success' : (plugin_info.state == 'INSTALLED' ? 'warning' : 'danger') %>"><%= plugin_info.state %></span>
+            <% if plugin_info.state == 'RUNNING' %>
+              <%= link_to '', plugin_stop_path(:plugin_key => plugin_info.plugin_key, :plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Stop', :remote => true, :class => 'plugin-link toggle-icon playpause running' %>
+            <% elsif plugin_info.state == 'INSTALLED' || plugin_info.state == 'STOPPED' %>
+              <%= link_to '', plugin_start_path(:plugin_key => plugin_info.plugin_key, :plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Start', :remote => true, :class => 'plugin-link toggle-icon playpause stopped' %>
+            <% end %>
+            <% if plugin_info.state == 'RUNNING' %>
+              <div class="dropdown">
+                <button class="dots-menu" onclick="toggleDropdown(this)">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10.0003 10.833C10.4606 10.833 10.8337 10.4599 10.8337 9.99967C10.8337 9.53944 10.4606 9.16634 10.0003 9.16634C9.54009 9.16634 9.16699 9.53944 9.16699 9.99967C9.16699 10.4599 9.54009 10.833 10.0003 10.833Z" stroke="#A4A7AE" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M10.0003 4.99967C10.4606 4.99967 10.8337 4.62658 10.8337 4.16634C10.8337 3.7061 10.4606 3.33301 10.0003 3.33301C9.54009 3.33301 9.16699 3.7061 9.16699 4.16634C9.16699 4.62658 9.54009 4.99967 10.0003 4.99967Z" stroke="#A4A7AE" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M10.0003 16.6663C10.4606 16.6663 10.8337 16.2932 10.8337 15.833C10.8337 15.3728 10.4606 14.9997 10.0003 14.9997C9.54009 14.9997 9.16699 15.3728 9.16699 15.833C9.16699 16.2932 9.54009 16.6663 10.0003 16.6663Z" stroke="#A4A7AE" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+
+                </button>
+                <div class="dropdown-content">
+                  <% unless plugin_info.plugin_key.nil? %>
+                    <%= link_to '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3.33366 13.3337H6.00033C6.36851 13.3337 6.66699 13.0352 6.66699 12.667V3.33366C6.66699 2.96547 6.36851 2.66699 6.00033 2.66699H3.33366C2.96547 2.66699 2.66699 2.96547 2.66699 3.33366V12.667C2.66699 13.0352 2.96547 13.3337 3.33366 13.3337Z" stroke="#A4A7AE" stroke-linejoin="round"/>
+                        <path d="M9.99967 13.3337H12.6663C13.0345 13.3337 13.333 13.0352 13.333 12.667V3.33366C13.333 2.96547 13.0345 2.66699 12.6663 2.66699H9.99967C9.63147 2.66699 9.33301 2.96547 9.33301 3.33366V12.667C9.33301 13.0352 9.63147 13.3337 9.99967 13.3337Z" stroke="#A4A7AE" stroke-linejoin="round"/>
+                        </svg> Pause'.html_safe, plugin_stop_path(:plugin_key => plugin_info.plugin_key, :plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Stop', :remote => true, :class => 'plugin-link' %>
+                  <% end %>
+                  <%= link_to '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M9.66667 1.33301L10.3333 3.03177C9.5386 2.60711 8.63073 2.36637 7.66667 2.36637C4.53705 2.36637 2 4.90342 2 8.03303C2 9.2271 2.36933 10.4194 3 11.333" stroke="#A4A7AE" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M5.66667 14.667L5 12.9682C5.79477 13.3928 6.7026 13.6336 7.66667 13.6336C10.7963 13.6336 13.3333 11.0966 13.3333 7.96695C13.3333 6.77282 12.964 5.58055 12.3333 4.66699" stroke="#A4A7AE" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                      Restart'.html_safe, plugin_restart_path(:plugin_key => plugin_info.plugin_key, :plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Restart', :remote => true, :class => 'plugin-link' %>
+                  <% if !plugin_info.version.nil? && has_kpm_plugin %>
+                    <%= link_to '<svg width="16" height="16" viewBox="0 0 448 512" fill="#A4A7AE" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M224 32C217.7 32 211.7 34.5 207 39L23 223C13.7 232.2 13.7 247.8 23 257C32.2 266.3 47.8 266.3 57 257L224 90.98L391 257C400.2 266.3 415.8 266.3 425 257C434.3 247.8 434.3 232.2 425 223L241 39C236.3 34.5 230.3 32 224 32ZM64 320C55.16 320 48 327.2 48 336V368C48 376.8 55.16 384 64 384H384C392.8 384 400 376.8 400 368V336C400 327.2 392.8 320 384 320H64Z"/>
+                      </svg> Uninstall'.html_safe, plugin_uninstall_path(:plugin_key => plugin_info.plugin_key, :plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Uninstall', :remote => true, :class => 'plugin-link' %>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>
+
+<%= javascript_tag do %>
+  function toggleDropdown(button) {
+    const dropdown = button.closest(".dropdown");
+    dropdown.classList.toggle("show");
+
+    // Close other dropdowns
+    document.querySelectorAll(".dropdown").forEach(d => {
+      if (d !== dropdown) d.classList.remove("show");
+    });
+  }
+
+  document.addEventListener("click", function (e) {
+    if (!e.target.closest(".dropdown")) {
+      document.querySelectorAll(".dropdown").forEach(d => d.classList.remove("show"));
+    }
+  });
+
+<% end %>
