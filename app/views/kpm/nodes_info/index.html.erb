@@ -94,8 +94,17 @@
     });
 
     $('.plugin-link').one('ajax:beforeSend', function () {
+      const $link = $(this);
+      const $pluginContainer = $link.closest('.official-plugin'); 
+
       $('.plugin-link').removeAttr('data-remote data-method href');
       $(this).children().addClass('fa-spin');
+
+      $(this).addClass('loading');
+
+      if ($pluginContainer.length) {
+        $pluginContainer.addClass('loading');
+      } 
     });
 
     $('.plugin-link').one('ajax:complete', function () {
@@ -107,11 +116,15 @@
       $('#nodes-table-wrapper').css({ opacity: 0.5 });
       $('#install-in-progress').show();
       $('#install-in-progress').children().addClass('fa-spin');
+      $('.plugin-link').addClass('loading');
+      $('.official-plugin').addClass('loading'); 
       setTimeout(fakeOperationComplete, 6000);
     <% end %>
 
     function fakeOperationComplete() {
       $('#install-in-progress').hide();
+      $('.plugin-link').removeClass('loading');
+      $('.official-plugin').removeClass('loading'); 
       $('.plugin-link').children().removeClass('fa-spin');
       $('#nodes-table-wrapper').fadeTo("slow", 0.5);
       $('#reload-page').fadeIn("slow");
