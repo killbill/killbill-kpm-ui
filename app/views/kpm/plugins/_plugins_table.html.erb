@@ -26,7 +26,11 @@
     $('#plugins-table').dataTable({
       "dom": "t",
       "paging": false,
-      "ordering": false
+      "ordering": true,
+      "columnDefs": [
+        { "orderable": true, "targets": [0, 1] },
+        { "orderable": false, "targets": [2] }
+      ]
     });
   });
 <% end %>
