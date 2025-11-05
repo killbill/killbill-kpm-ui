@@ -32,7 +32,7 @@ module Killbill
         def stream_osgi_logs(writer, host, last_event_id_ref)
           url = host
           url = "http://#{url}" unless url.starts_with?('http:')
-          SSE::Client.new(url + KILLBILL_OSGI_LOGGER_PREFIX, last_event_id: last_event_id_ref.get, logger: Rails.logger) do |client|
+          SSE::Client.new(url + KILLBILL_OSGI_LOGGER_PREFIX, last_event_id: last_event_id_ref.get, logger: Logger.new($stdout)) do |client|
             client.on_event do |event|
               writer.write(event.data, id: event.id)
               last_event_id_ref.set(event.id)
