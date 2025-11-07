@@ -97,7 +97,7 @@
       const $link = $(this);
       const $pluginContainer = $link.closest('.official-plugin'); 
 
-      $('.plugin-link').removeAttr('data-remote data-method href');
+      $('.plugin-link').removeAttr('data-remote').removeAttr('data-method').removeAttr('href');
       $(this).children().addClass('fa-spin');
 
       $(this).addClass('loading');
@@ -112,7 +112,7 @@
     });
 
     <% if @installing %>
-      $('.plugin-link').removeAttr('data-remote data-method href');
+      $('.plugin-link').removeAttr('data-remote').removeAttr('data-method').removeAttr('href');
       $('#nodes-table-wrapper').css({ opacity: 0.5 });
       $('#install-in-progress').show();
       $('#install-in-progress').children().addClass('fa-spin');
