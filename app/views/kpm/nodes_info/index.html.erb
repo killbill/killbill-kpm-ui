@@ -1,68 +1,130 @@
-<div class="search">
+<div class="kaui-container kpm-nodes-info-index">
+  <%= render partial: 'kaui/components/breadcrumb/breadcrumb', locals: {
+    breadcrumbs: [
+      { label: 'Settings', href: '/' },
+      { label: "Plugin Manager", href: '#' }
+    ]
+  } %>
 
-  <div class="column-block">
+  <div class="d-flex" style="gap: 4rem;">
+    <%= render :template => 'kaui/layouts/kaui_setting_sidebar' %>
 
-    <h1>Configured instances
-      <div id="install-in-progress" class="btn btn-xs text-success" style="display: none;"><i class="fa fa-refresh"></i>&nbsp;Operation in progress</div>
-      <%= link_to('<i class="fa fa-refresh"></i>&nbsp;Operation complete, reload page'.html_safe, url_for, :id => "reload-page", :class => 'btn btn-xs text-success', :style => "display: none;") %>
-      <% if kpm_plugin_installed?(@nodes_info) %>
-        <div class="pull-right">
-          <%= link_to 'Install new plugin', plugins_path %>
+    <div class="admin-tenant-details w-100">
+      <div class="d-flex flex-column">
+        <div class="admin-tenant-details-header">
+          <h2>Plugin Manager</h2>
+          <span>
+            <div id="install-in-progress" class="btn btn-xs text-success" style="display: none;">
+              <i class="fa fa-refresh"></i>&nbsp;Operation in progress
+            </div>
+            <%= link_to url_for, id: "reload-page", style: "display: none;" do %>
+              <%= render "kaui/components/button/button", {
+                label: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M9.66667 1.33301L10.3333 3.03177C9.5386 2.60711 8.63073 2.36637 7.66667 2.36637C4.53705 2.36637 2 4.90342 2 8.03303C2 9.2271 2.36933 10.4194 3 11.333" stroke="#A4A7AE" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M5.66667 14.667L5 12.9682C5.79477 13.3928 6.7026 13.6336 7.66667 13.6336C10.7963 13.6336 13.3333 11.0966 13.3333 7.96695C13.3333 6.77282 12.964 5.58055 12.3333 4.66699" stroke="#A4A7AE" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg> Operation Complete, Reload Page'.html_safe,
+                variant: "outline-secondary d-inline-flex align-items-center gap-1",
+                type: "button",
+                html_class: "kaui-button custom-hover mx-2"
+              } %>
+            <% end %>
+
+              
+            <% if kpm_plugin_installed?(@nodes_info) %>
+              <div class="pull-right">
+                <%= link_to plugins_path do %>
+                  <%= render "kaui/components/button/button", {
+                    label: 'Install new plugin',
+                    variant: "outline-secondary d-inline-flex align-items-center gap-1",
+                    type: "button",
+                    html_class: "kaui-dropdown custom-hover",
+                  } %>
+                <% end %>
+              </div>
+            <% end %>
+          </span>
         </div>
-      <% end %>
-    </h1>
 
-    <div id="nodes-table-wrapper">
-      <%= render :partial => 'kpm/nodes_info/nodes_table', :locals => {:nodes_info => @nodes_info} %>
+        <!-- Button Tabs -->
+        <div class="plugin-tabs my-4">
+          <button type="button" class="plugin-tab activelink" data-target=".official-plugins-table">Official Plugins</button>
+          <button type="button" class="plugin-tab" data-target=".nodes-table-wrapper">Configured Instances</button>
+          <button type="button" class="plugin-tab" data-target=".logs-table-wrapper">Logs</button>
+        </div>
+
+        <!-- Plugin Sections -->
+        <div id="official-plugins-table">
+          <div class="official-plugins-table" style="display: block;">
+            <%= render partial: 'kpm/nodes_info/official_plugins', locals: { nodes_info: @nodes_info } %>
+          </div>
+        </div>
+
+        <div id="nodes-table-wrapper" style="">
+          <div class="nodes-table-wrapper" style="display: none;">
+            <%= render partial: 'kpm/nodes_info/nodes_table', locals: { nodes_info: @nodes_info } %>
+          </div>
+        </div>
+
+        <div id="logs-table-wrapper">
+          <div class="logs-table-wrapper" style="display: none;">
+            <%= render partial: 'kpm/nodes_info/logs_table', locals: { kb_host: @kb_host } %>
+          </div>
+        </div>
+      </div>
     </div>
-
-  </div>
-
-  <div class="column-block">
-
-    <h1>Logs</h1>
-
-    <div id="logs-table-wrapper">
-      <%= render :partial => 'kpm/nodes_info/logs_table', :locals => {:kb_host => @kb_host} %>
-    </div>
-
   </div>
 </div>
 
+
+<!-- JavaScript -->
 <%= javascript_tag do %>
-  $(document).ready(function() {
-    refreshLogs('<%= nodes_info_refresh_path(:kb_host => @kb_host, :last_event_id => @last_event_id, :format => :js) %>');
+  $(document).ready(function () {
+    refreshLogs('<%= nodes_info_refresh_path(kb_host: @kb_host, last_event_id: @last_event_id, format: :js) %>');
 
-    $('.plugin-link').one('ajax:beforeSend', function() {
-      // Prevent other clicks
-      $('.plugin-link').removeAttr('data-remote')
-                       .removeAttr('data-method')
-                       .removeAttr('href')
+    $('.plugin-tab').on('click', function () {
+      $('.plugin-tab').removeClass('activelink');
+      $(this).addClass('activelink');
 
-      // Spin
-      $(this).children().addClass('fa-spin');
+      const target = $(this).data('target');
+
+      // Hide all
+      $('.official-plugins-table, .nodes-table-wrapper, .logs-table-wrapper').css('display', 'none');
+      // Show selected
+      $(target).css('display', 'block');
     });
-    $('.plugin-link').one('ajax:complete', function() {
-      // Delay a bit, to give time for the plugin state to change before the next refresh
+
+    $('.plugin-link').one('ajax:beforeSend', function () {
+      const $link = $(this);
+      const $pluginContainer = $link.closest('.official-plugin'); 
+
+      $('.plugin-link').removeAttr('data-remote').removeAttr('data-method').removeAttr('href');
+      $(this).children().addClass('fa-spin');
+
+      $(this).addClass('loading');
+
+      if ($pluginContainer.length) {
+        $pluginContainer.addClass('loading');
+      } 
+    });
+
+    $('.plugin-link').one('ajax:complete', function () {
       setTimeout(fakeOperationComplete, 6000);
     });
 
-    <%- if @installing %>
-      // Prevent other clicks
-      $('.plugin-link').removeAttr('data-remote')
-                       .removeAttr('data-method')
-                       .removeAttr('href')
+    <% if @installing %>
+      $('.plugin-link').removeAttr('data-remote').removeAttr('data-method').removeAttr('href');
       $('#nodes-table-wrapper').css({ opacity: 0.5 });
-
       $('#install-in-progress').show();
       $('#install-in-progress').children().addClass('fa-spin');
-
+      $('.plugin-link').addClass('loading');
+      $('.official-plugin').addClass('loading'); 
       setTimeout(fakeOperationComplete, 6000);
     <% end %>
 
     function fakeOperationComplete() {
       $('#install-in-progress').hide();
-
+      $('.plugin-link').removeClass('loading');
+      $('.official-plugin').removeClass('loading'); 
       $('.plugin-link').children().removeClass('fa-spin');
       $('#nodes-table-wrapper').fadeTo("slow", 0.5);
       $('#reload-page').fadeIn("slow");

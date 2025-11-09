@@ -1,66 +1,32 @@
-<table id="nodes-table" class="table table-condensed table-striped mobile-data">
-  <thead>
-  <tr>
-    <th>Node</th>
-    <th>Uptime</th>
-    <th>Kill Bill version</th>
-    <th>Dependencies</th>
-    <th>Plugins</th>
-  </tr>
-  </thead>
-  <tbody>
-  <%- has_kpm_plugin = kpm_plugin_installed?(nodes_info) %>
-  <% nodes_info.each do |node_info| %>
-      <tr>
-        <td><%= node_info.node_name %></td>
-        <td>
-          <% unless node_info.boot_time.blank? %>
-              <%= time_ago_in_words(DateTime.parse(node_info.boot_time)) %>
-          <% end %>
-        </td>
-        <td><%= node_info.kb_version %></td>
-        <td>
-          <ul>
-            <li>API: <%= node_info.api_version %></li>
-            <li>Plugin API: <%= node_info.plugin_api_version %></li>
-            <li>Platform: <%= node_info.platform_version %></li>
-            <li>Commons: <%= node_info.common_version %></li>
-          </ul>
-        </td>
-        <td>
-          <% unless (node_info.plugins_info || []).empty? %>
-              <ul>
-                <% node_info.plugins_info.each do |plugin_info| %>
-                    <li>
-                      <%= plugin_info.plugin_name %> <%= plugin_info.version %> <span class="label label-<%= plugin_info.state == 'RUNNING' ? 'success' : (plugin_info.state == 'INSTALLED' ? 'warning' : 'danger') %>"><%= plugin_info.state %></span>
-                      <% if plugin_info.state == 'RUNNING' %>
-                        <%-# If there is not plugin_key, this is most likely a pure OSGI bundle. In that case, we don't want to allow stopping it as we would lose track of it (once it's removed from the OSGI bundle registry, we don't know about it anymore) -%>
-                        <% unless plugin_info.plugin_key.nil? %>
-                          <%= link_to '<i class="fa fa-pause"></i>'.html_safe, plugin_stop_path(:plugin_key => plugin_info.plugin_key, :plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Stop', :remote => true, :class => 'plugin-link' %>
-                        <% end %>
-                        <%= link_to '<i class="fa fa-refresh"></i>'.html_safe, plugin_restart_path(:plugin_key => plugin_info.plugin_key, :plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Restart', :remote => true, :class => 'plugin-link' %>
-                      <% elsif plugin_info.state == 'INSTALLED' || plugin_info.state == 'STOPPED' %>
-                          <%= link_to '<i class="fa fa-play"></i>'.html_safe, plugin_start_path(:plugin_key => plugin_info.plugin_key, :plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Start', :remote => true, :class => 'plugin-link' %>
-                      <% end %>
-                      <% if !plugin_info.version.nil? && has_kpm_plugin %>
-                          <%= link_to '<i class="fa fa-eject"></i>'.html_safe, plugin_uninstall_path(:plugin_key => plugin_info.plugin_key, :plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Uninstall', :remote => true, :class => 'plugin-link' %>
-                      <% end %>
-                    </li>
-                <% end %>
-              </ul>
-          <% end %>
-        </td>
-      </tr>
-  <% end %>
-  </tbody>
-</table>
-
-<%= javascript_tag do %>
-  $(document).ready(function() {
-    $('#nodes-table').dataTable({
-      "dom": "t",
-      "paging": false,
-      "ordering": false
-    });
-  });
+<%- has_kpm_plugin = kpm_plugin_installed?(nodes_info) %>
+<% nodes_info.each do |node_info| %>
+  <div class="row nodes-info">
+    <div class="col-sm-6">
+      <div class="mb-3">
+        <b>Node</b>
+        <p>
+          <%= node_info.node_name %>
+        </p>
+      </div>
+      <div>
+        <b>Kill Bill Version</b>
+        <p><%= node_info.kb_version %></p>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <% unless node_info.boot_time.blank? %>
+        <div class="mb-3">
+          <b>Uptime</b>
+          <p class="transaction-status"> <%= time_ago_in_words(DateTime.parse(node_info.boot_time)) %></p>
+        </div>
+      <% end %>
+      <div>
+        <b>Dependencies</b>
+        <p>API: <%= node_info.api_version %></p>
+        <p>Plugin API: <%= node_info.plugin_api_version %></p>
+        <p>Platform: <%= node_info.platform_version %></p>
+        <p>Commons: <%= node_info.common_version %></p>
+      </div>
+    </div>
+   </div>
 <% end %>

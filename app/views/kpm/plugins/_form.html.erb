@@ -1,37 +1,57 @@
+<div class="upload-plugin-form">
 <%= form_tag plugin_install_path, :class => 'form-horizontal' do %>
-    <div class="form-group">
-      <%= label_tag :plugin_key, 'Plugin key', :class => 'col-sm-2 control-label' %>
+    <div class="form-group d-flex pb-3">
+      <%= label_tag :plugin_key, 'Plugin key', :class => 'col-sm-3 control-label' %>
       <div class="col-sm-9">
         <%= text_field_tag :plugin_key, '', :class => 'form-control', :placeholder => 'Unique identifier for this plugin, e.g. myCompany:myPluginName', :required => true %>
       </div>
     </div>
-    <div class="form-group">
-      <%= label_tag :plugin_version, 'Version', :class => 'col-sm-2 control-label' %>
+    <div class="form-group d-flex pb-3">
+      <%= label_tag :plugin_version, 'Version', :class => 'col-sm-3 control-label' %>
       <div class="col-sm-9">
         <%= text_field_tag :plugin_version, '', :class => 'form-control', :placeholder => 'Plugin version', :required => true %>
       </div>
     </div>
-    <div class="form-group">
-      <%= label_tag :plugin_uri, 'URI', :class => 'col-sm-2 control-label' %>
+    <div class="form-group d-flex pb-3">
+      <%= label_tag :plugin_uri, 'URI', :class => 'col-sm-3 control-label' %>
       <div class="col-sm-9">
         <%= text_field_tag :plugin_uri, '', :class => 'form-control', :placeholder => 'HTTP(S) url accessible from all Kill Bill nodes', :required => true %>
       </div>
     </div>
-    <div class='form-group'>
-      <div class="col-sm-offset-2 col-sm-10">
-        <% %w(java ruby).each do |type| %>
-            <div class="checkbox">
-              <%= label_tag :plugin_type do %>
-                  <%= radio_button_tag :plugin_type, type, (type == 'java') %>
-                  <%= type %>
+
+    <div class="form-group d-flex pb-3">
+      <%= label_tag :plugin_type, 'Type', class: 'col-sm-3 control-label' %>
+      <div class="col-sm-offset-2 col-sm-9">
+        <div class="toggle-segment">
+          <% %w(java ruby).each do |type| %>
+            <div class="radio">
+              <%= label_tag "plugin_type_#{type}" do %>
+                <%= radio_button_tag :plugin_type, type, (type == 'java'), id: "plugin_type_#{type}" %>
+                <%= type.capitalize %>
               <% end %>
             </div>
-        <% end %>
+          <% end %>
+        </div>
       </div>
     </div>
-    <div class="form-group">
-      <div class="col-sm-offset-2 col-sm-10">
-        <%= submit_tag 'Install', :class => 'btn btn-default' %>
-      </div>
+
+    <div class="form-group d-flex justify-content-end pt-3 border-top">
+      <%= render "kaui/components/button/button", {
+        label: 'Close',
+        variant: "outline-secondary d-inline-flex align-items-center gap-1",
+        type: "button",
+        html_class: "kaui-button custom-hover mx-2",
+        html_options: {
+          id: "closeButton",
+          onclick: "window.history.back();"
+        }
+      } %>
+      <%= render "kaui/components/button/button", {
+        label: 'Install',
+        variant: "outline-secondary d-inline-flex align-items-center gap-1",
+        type: "submit",
+        html_class: "kaui-dropdown custom-hover"
+      } %>
     </div>
 <% end %>
+</div>
