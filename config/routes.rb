@@ -14,5 +14,6 @@ KPM::Engine.routes.draw do
     match '/plugin/start' => 'nodes_info#start_plugin', :via => :post, :as => 'plugin_start'
     match '/plugin/stop' => 'nodes_info#stop_plugin', :via => :post, :as => 'plugin_stop'
     match '/plugin/restart' => 'nodes_info#restart_plugin', :via => :post, :as => 'plugin_restart'
+    match '/plugin/status' => 'nodes_info#plugin_status', :via => :get, :as => 'plugin_status'
   end
 end

@@ -78,7 +78,33 @@ module KPM
 
     def install_plugin
       trigger_node_plugin_command('INSTALL_PLUGIN')
-      redirect_to nodes_info_index_path(i: 1)
+      redirect_to nodes_info_index_path(i: 1, plugin_key: params[:plugin_key], plugin_version: params[:plugin_version])
+    end
+
+    def plugin_status
+      plugin_key = params[:plugin_key]
+      plugin_version = params[:plugin_version]
+
+      nodes_info = ::KillBillClient::Model::NodesInfo.nodes_info(options_for_klient)
+      installed = false
+
+      nodes_info.each do |node_info|
+        next if node_info.plugins_info.nil?
+
+        node_info.plugins_info.each do |plugin_info|
+          if plugin_info.plugin_key == plugin_key
+            # If plugin_version is specified, check for exact version match
+            # Otherwise, just check if any version of the plugin exists
+            if plugin_version.blank? || plugin_info.version == plugin_version
+              installed = true
+              break
+            end
+          end
+        end
+        break if installed
+      end
+
+      render json: { installed: installed }
     end
 
     def uninstall_plugin

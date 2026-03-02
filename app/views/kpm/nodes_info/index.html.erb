@@ -112,20 +112,58 @@
     });
 
     <% if @installing %>
+      var pluginKey = '<%= params[:plugin_key].to_s.gsub("'", "\\'") %>';
+      var pluginVersion = '<%= params[:plugin_version].to_s.gsub("'", "\\'") %>';
+      var pollAttempts = 0;
+      var maxPollAttempts = 60;
+      var pollInterval = 1000;
+
       $('.plugin-link').removeAttr('data-remote').removeAttr('data-method').removeAttr('href');
       $('#nodes-table-wrapper').css({ opacity: 0.5 });
       $('#install-in-progress').show();
       $('#install-in-progress').children().addClass('fa-spin');
-      setTimeout(fakeOperationComplete, 6000);
+
+      function pollPluginStatus() {
+        pollAttempts++;
+
+        if (pollAttempts > maxPollAttempts) {
+          operationComplete();
+          return;
+        }
+
+        $.ajax({
+          url: '<%= plugin_status_path %>',
+          type: 'GET',
+          data: { plugin_key: pluginKey, plugin_version: pluginVersion },
+          dataType: 'json',
+          success: function(response) {
+            if (response.installed) {
+              operationComplete();
+            } else {
+              setTimeout(pollPluginStatus, pollInterval);
+            }
+          },
+          error: function() {
+            setTimeout(pollPluginStatus, pollInterval);
+          }
+        });
+      }
+
+      // Start polling after a short initial delay
+      setTimeout(pollPluginStatus, 2000);
     <% end %>
 
-    function fakeOperationComplete() {
+    function operationComplete() {
       $('#install-in-progress').hide();
       $('.plugin-link').removeClass('loading');
       $('.official-plugin').removeClass('loading'); 
       $('.plugin-link').children().removeClass('fa-spin');
       $('#nodes-table-wrapper').fadeTo("slow", 0.5);
       $('#reload-page').fadeIn("slow");
+    }
+
+    function fakeOperationComplete() {
+      operationComplete();
     }
   });
 <% end %>
