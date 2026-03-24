@@ -5,9 +5,17 @@ require 'kpm/client'
 module KPM
   class PluginsController < EngineController
     def index
-      nodes_by_kb_version, @kb_version = killbill_version
+      nodes_by_kb_version, @kb_version, nodes_info = killbill_version
       @warning_message = ''
       @plugins = {}
+
+      @installed_plugin_keys = Set.new
+      (nodes_info || []).each do |node_info|
+        (node_info.plugins_info || []).each do |plugin_info|
+          @installed_plugin_keys.add(plugin_info.plugin_key) unless plugin_info.plugin_key.nil?
+        end
+      end
+
       if !nodes_by_kb_version.nil? && nodes_by_kb_version.size > 1
         @warning_message = different_versions_warning_message(nodes_by_kb_version)
       else
@@ -35,14 +43,14 @@ module KPM
 
     def killbill_version
       nodes_info = ::KillBillClient::Model::NodesInfo.nodes_info(options_for_klient)
-      return nil if nodes_info.blank?
+      return [nil, nil, []] if nodes_info.blank?
 
       first_node_version = nodes_info.first.kb_version
       nodes_by_kb_version = {}
       nodes_info.each do |node|
         nodes_by_kb_version[node.kb_version] = "#{nodes_by_kb_version[node.kb_version] || ''} #{node.node_name}"
       end
-      [nodes_by_kb_version, first_node_version.scan(/(\d+\.\d+)(\.\d)?/).flatten[0]]
+      [nodes_by_kb_version, first_node_version.scan(/(\d+\.\d+)(\.\d)?/).flatten[0], nodes_info]
     end
   end
 end

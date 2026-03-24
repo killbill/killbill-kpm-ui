@@ -12,7 +12,13 @@
         <tr>
           <td><%= name %></td>
           <td><%= version %></td>
-          <td><%= link_to 'Install', plugin_install_path(:plugin_key => name), :method => :post, :title => 'Install' %></td>
+          <td>
+            <% if @installed_plugin_keys.include?(name) %>
+              <span class="label label-success">Installed</span>
+            <% else %>
+              <%= link_to 'Install', plugin_install_path(:plugin_key => name), :method => :post, :title => 'Install' %>
+            <% end %>
+          </td>
         </tr>
     <% end %>
     </tbody>
