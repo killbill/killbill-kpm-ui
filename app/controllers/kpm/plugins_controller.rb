@@ -10,9 +10,21 @@ module KPM
       @plugins = {}
 
       @installed_plugin_keys = Set.new
+      # Map of installed plugin_key => highest installed version found across nodes
+      @installed_plugins = {}
       (nodes_info || []).each do |node_info|
         (node_info.plugins_info || []).each do |plugin_info|
-          @installed_plugin_keys.add(plugin_info.plugin_key) unless plugin_info.plugin_key.nil?
+          next if plugin_info.plugin_key.nil?
+
+          @installed_plugin_keys.add(plugin_info.plugin_key)
+          next if plugin_info.version.nil?
+
+          current = @installed_plugins[plugin_info.plugin_key]
+          begin
+            @installed_plugins[plugin_info.plugin_key] = plugin_info.version if current.nil? || Gem::Version.new(plugin_info.version) > Gem::Version.new(current)
+          rescue ArgumentError
+            @installed_plugins[plugin_info.plugin_key] ||= plugin_info.version
+          end
         end
       end
 
