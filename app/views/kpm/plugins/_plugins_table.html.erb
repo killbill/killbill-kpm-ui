@@ -13,11 +13,16 @@
           <td><%= name %></td>
           <td><%= version %></td>
           <td>
-            <% if @installed_plugin_keys.include?(name) %>
-              <span class="label label-success">Installed</span>
-            <% else %>
-              <%= link_to 'Install', plugin_install_path(:plugin_key => name), :method => :post, :title => 'Install' %>
-            <% end %>
+              <% if @installed_plugin_keys.include?(name) %>
+                <% installed_version = @installed_plugins && @installed_plugins[name] %>
+                <% if installed_version.present? && version.present? && Gem::Version.correct?(installed_version) && Gem::Version.new(installed_version) < Gem::Version.new(version) %>
+                  <%= link_to 'Update', plugin_install_path(:plugin_key => name), :method => :post, :title => 'Update' %>
+                <% else %>
+                  <span class="label label-success">Installed</span>
+                <% end %>
+              <% else %>
+                <%= link_to 'Install', plugin_install_path(:plugin_key => name), :method => :post, :title => 'Install' %>
+              <% end %>
           </td>
         </tr>
     <% end %>
