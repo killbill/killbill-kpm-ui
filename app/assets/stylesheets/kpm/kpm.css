@@ -41,6 +41,12 @@
 
 /* app/views/kpm/nodes_info/_nodes_table.html.erb */
 
+.nodes-separator {
+  border: none;
+  border-top: 0.1875rem solid #d2d6db;
+  margin: 1.5rem 0;
+}
+
 .nodes-info b {
   font-weight: 600;
   font-size: 0.875rem;
@@ -59,6 +65,31 @@
 }
 
 /* app/views/kpm/nodes_info/_official_plugins.html.erb */
+
+.official-plugins-data .node-group {
+  margin-bottom: 1.5rem;
+}
+
+.official-plugins-data .node-group-header {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0;
+  margin-bottom: 0.25rem;
+  border-bottom: 0.125rem solid #e9eaeb;
+}
+
+.official-plugins-data .node-group-label {
+  font-weight: 600;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: #414651;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.official-plugins-data .node-group .official-plugin:last-child {
+  border-bottom: none;
+}
 
 .official-plugins-data .official-plugin {
   padding: 1rem 0;

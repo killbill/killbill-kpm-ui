@@ -2,6 +2,10 @@
   <%- has_kpm_plugin = kpm_plugin_installed?(nodes_info) %>
   <% nodes_info.each do |node_info| %>
     <% unless (node_info.plugins_info || []).empty? %>
+      <div class="node-group">
+        <div class="node-group-header">
+          <span class="node-group-label">Node: <%= node_info.node_name %></span>
+        </div>
       <% node_info.plugins_info.each do |plugin_info| %>
         <div class="official-plugin ">
           <div class="d-flex align-items-center">
@@ -51,6 +55,7 @@
           </div>
         </div>
       <% end %>
+      </div>
     <% end %>
   <% end %>
 </div>
