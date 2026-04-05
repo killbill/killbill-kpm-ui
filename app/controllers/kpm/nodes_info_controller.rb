@@ -8,7 +8,7 @@ module KPM
     include ActionController::Live
 
     def index
-      @installing = !params[:i].blank?
+      @installing = params[:i].present?
 
       @nodes_info = ::KillBillClient::Model::NodesInfo.nodes_info(options_for_klient)
 
