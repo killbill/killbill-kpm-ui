@@ -7,12 +7,12 @@ KPM::Engine.routes.draw do
   resources :plugins, only: [:index]
 
   scope '/nodes_info' do
-    match '/refresh' => 'nodes_info#refresh', :via => :get, :as => 'nodes_info_refresh'
-    match '/plugin/install' => 'nodes_info#install_plugin', :via => :post, :as => 'plugin_install'
-    match '/plugin/install_from_fs' => 'nodes_info#install_plugin_from_fs', :via => :post, :as => 'plugin_install_from_fs'
-    match '/plugin/uninstall' => 'nodes_info#uninstall_plugin', :via => :post, :as => 'plugin_uninstall'
-    match '/plugin/start' => 'nodes_info#start_plugin', :via => :post, :as => 'plugin_start'
-    match '/plugin/stop' => 'nodes_info#stop_plugin', :via => :post, :as => 'plugin_stop'
-    match '/plugin/restart' => 'nodes_info#restart_plugin', :via => :post, :as => 'plugin_restart'
+    get '/refresh' => 'nodes_info#refresh', :as => 'nodes_info_refresh'
+    post '/plugin/install' => 'nodes_info#install_plugin', :as => 'plugin_install'
+    post '/plugin/install_from_fs' => 'nodes_info#install_plugin_from_fs', :as => 'plugin_install_from_fs'
+    post '/plugin/uninstall' => 'nodes_info#uninstall_plugin', :as => 'plugin_uninstall'
+    post '/plugin/start' => 'nodes_info#start_plugin', :as => 'plugin_start'
+    post '/plugin/stop' => 'nodes_info#stop_plugin', :as => 'plugin_stop'
+    post '/plugin/restart' => 'nodes_info#restart_plugin', :as => 'plugin_restart'
   end
 end

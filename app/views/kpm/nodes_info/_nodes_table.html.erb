@@ -1,5 +1,6 @@
 <%- has_kpm_plugin = kpm_plugin_installed?(nodes_info) %>
-<% nodes_info.each do |node_info| %>
+<% nodes_info.each_with_index do |node_info, index| %>
+  <%= content_tag :hr, nil, class: 'nodes-separator' if index > 0 %>
   <div class="row nodes-info">
     <div class="col-sm-6">
       <div class="mb-3">
@@ -28,5 +29,5 @@
         <p>Commons: <%= node_info.common_version %></p>
       </div>
     </div>
-   </div>
+  </div>
 <% end %>
