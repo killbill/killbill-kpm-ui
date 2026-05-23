@@ -21,3 +21,17 @@
 #logs-form {
     margin-bottom: 15px;
 }
+
+/* Plugin config modal */
+.plugin-config-modal .close-button {
+    background: none;
+    border: none;
+}
+
+.plugin-config-modal .config-label {
+    margin-top: 10px;
+}
+
+.plugin-config-modal .config-textarea {
+    height: 10rem;
+}
