@@ -116,16 +116,20 @@ module KPM
       elsif plugin_config.blank?
         flash[:error] = 'Plugin configuration cannot be blank'
       else
-        user = current_tenant_user
-        ::KillBillClient::Model::Tenant.upload_tenant_plugin_config(
-          plugin_name,
-          plugin_config.gsub(/\r\n?/, "\n"),
-          user[:username],
-          nil,
-          nil,
-          options_for_klient
-        )
-        flash[:notice] = 'Plugin configuration was successfully uploaded'
+        begin
+          user = current_tenant_user
+          ::KillBillClient::Model::Tenant.upload_tenant_plugin_config(
+            plugin_name,
+            plugin_config.gsub(/\r\n?/, "\n"),
+            user[:username],
+            nil,
+            nil,
+            options_for_klient
+          )
+          flash[:notice] = 'Plugin configuration was successfully uploaded'
+        rescue StandardError => e
+          flash[:error] = "Failed to upload plugin configuration: #{e.message}"
+        end
       end
 
       redirect_to nodes_info_index_path

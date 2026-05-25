@@ -70,13 +70,15 @@
   <% end %>
 </div>
 
-<%# Render plugin config modals (outside the list to avoid stacking context issues) %>
+<%# Render plugin config modals once per unique plugin name to avoid duplicate DOM ids in multi-node setups %>
+<% rendered_modal_names = [] %>
 <% nodes_info.each do |node_info| %>
   <% (node_info.plugins_info || []).each do |plugin_info| %>
-    <% if plugin_info.state == 'RUNNING' %>
-      <%= render partial: 'kpm/nodes_info/form_plugin_config',
-                 locals: { plugin_info: plugin_info, tenant_plugin_config: tenant_plugin_config } %>
-    <% end %>
+    <% next unless plugin_info.state == 'RUNNING' %>
+    <% next if rendered_modal_names.include?(plugin_info.plugin_name) %>
+    <% rendered_modal_names << plugin_info.plugin_name %>
+    <%= render partial: 'kpm/nodes_info/form_plugin_config',
+               locals: { plugin_info: plugin_info, tenant_plugin_config: tenant_plugin_config } %>
   <% end %>
 <% end %>
 
