@@ -1,9 +1,13 @@
 <% modal_id = "plugin_config_modal_#{plugin_info.plugin_name.gsub(/[^a-zA-Z0-9]/, '_')}" %>
 <% plugin_name = plugin_info.plugin_name %>
 <% plugin_key  = plugin_info.plugin_key %>
-<% existing_config = tenant_plugin_config[plugin_name] ||
-                     tenant_plugin_config[plugin_key] ||
-                     tenant_plugin_config[plugin_name.to_s.gsub('killbill-', '')] || '' %>
+<% config_lookup_keys = [
+     plugin_key,
+     plugin_name,
+     plugin_name.to_s.gsub('killbill-', ''),
+     plugin_name.to_s.gsub(':', '-')
+   ].compact.uniq %>
+<% existing_config = config_lookup_keys.lazy.map { |key| tenant_plugin_config[key] }.find(&:present?) || '' %>
 
 <div class="modal fade plugin-config-modal" id="<%= modal_id %>" tabindex="-1" role="dialog"
      aria-labelledby="<%= modal_id %>_label" aria-hidden="true">
