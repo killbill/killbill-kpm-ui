@@ -14,5 +14,6 @@ KPM::Engine.routes.draw do
     post '/plugin/start' => 'nodes_info#start_plugin', :as => 'plugin_start'
     post '/plugin/stop' => 'nodes_info#stop_plugin', :as => 'plugin_stop'
     post '/plugin/restart' => 'nodes_info#restart_plugin', :as => 'plugin_restart'
+    post '/plugin/config' => 'nodes_info#upload_plugin_config', :as => 'plugin_upload_config'
   end
 end

@@ -1,0 +1,64 @@
+<% modal_id = "plugin_config_modal_#{plugin_info.plugin_name.gsub(/[^a-zA-Z0-9]/, '_')}" %>
+<% plugin_name = plugin_info.plugin_name %>
+<% plugin_key  = plugin_info.plugin_key %>
+<% config_lookup_keys = [
+     plugin_key,
+     plugin_name,
+     plugin_name.to_s.gsub('killbill-', ''),
+     plugin_name.to_s.gsub(':', '-')
+   ].compact.uniq %>
+<% existing_config = config_lookup_keys.lazy.map { |key| tenant_plugin_config[key] }.find(&:present?) || '' %>
+
+<div class="modal fade plugin-config-modal" id="<%= modal_id %>" tabindex="-1" role="dialog"
+     aria-labelledby="<%= modal_id %>_label" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title d-flex align-items-center gap-3" id="<%= modal_id %>_label">
+          <span class="icon-container">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12.9163 9.99967C12.9163 11.6105 11.6105 12.9163 9.99967 12.9163C8.38884 12.9163 7.08301 11.6105 7.08301 9.99967C7.08301 8.38884 8.38884 7.08301 9.99967 7.08301C11.6105 7.08301 12.9163 8.38884 12.9163 9.99967Z" stroke="#414651" stroke-width="1.5"/>
+              <path d="M8.14378 2.2368L7.50038 4.16699L6.20051 4.98913L4.07368 4.46288C3.71712 4.37466 3.34485 4.53028 3.15718 4.84603L2.02034 6.7586C1.81548 7.10327 1.8851 7.54496 2.18605 7.80988L3.67783 9.12316V10.8775L2.18652 12.1907C1.88563 12.4557 1.81606 12.8973 2.0209 13.2419L3.15778 15.1546C3.34545 15.4703 3.71773 15.626 4.07428 15.5377L6.20112 15.0115L7.43253 15.7021L8.02033 17.7321C8.1235 18.0884 8.44979 18.3337 8.82079 18.3337H11.1806C11.5515 18.3337 11.8779 18.0884 11.981 17.7321L12.5689 15.7021L13.7996 15.0115L15.9265 15.5377C16.283 15.626 16.6553 15.4703 16.843 15.1546L18.0013 13.2058C18.1964 12.8777 18.1435 12.4588 17.873 12.1895L16.3678 10.6909L16.3684 9.30974L17.8735 7.81114C18.1441 7.54178 18.197 7.123 18.002 6.79482L16.8435 4.84603C16.6559 4.53028 16.2836 4.37466 15.927 4.46288L13.8002 4.98913L12.5004 4.16699L11.857 2.2368C11.7435 1.89652 11.4251 1.66699 11.0664 1.66699H8.93438C8.57563 1.66699 8.2572 1.89652 8.14378 2.2368Z" stroke="#414651" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <strong class="ms-1"><%= plugin_name %></strong>
+        </h5>
+        <button type="button" class="close close-button custom-hover" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15.8337 4.1665L4.16699 15.8332M4.16699 4.1665L15.8337 15.8332" stroke="#A4A7AE" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </button>
+      </div>
+
+      <%= form_tag(plugin_upload_config_path, method: :post, class: 'form-horizontal') do %>
+        <%= hidden_field_tag :plugin_name, plugin_name %>
+
+        <div class="modal-body">
+          <div class="form-group d-flex pb-3 border-bottom mb-3">
+            <%= label_tag "plugin_config_#{modal_id}", 'Configuration', class: 'col-sm-2 control-label config-label' %>
+            <div class="col-sm-10">
+              <textarea name="plugin_config"
+                        id="plugin_config_<%= modal_id %>"
+                        rows="25"
+                        class="form-control config-textarea"
+                        placeholder="Enter plugin configuration ..."><%= existing_config %></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end px-3 pb-3">
+          <%= render "kaui/components/button/button", {
+            label: 'Upload',
+            variant: "outline-secondary d-inline-flex align-items-center gap-1",
+            type: "submit",
+            html_class: "kaui-dropdown custom-hover m-0"
+          } %>
+        </div>
+      <% end %>
+
+    </div>
+  </div>
+</div>

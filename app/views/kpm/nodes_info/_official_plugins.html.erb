@@ -44,6 +44,16 @@
                       <path d="M5.66667 14.667L5 12.9682C5.79477 13.3928 6.7026 13.6336 7.66667 13.6336C10.7963 13.6336 13.3333 11.0966 13.3333 7.96695C13.3333 6.77282 12.964 5.58055 12.3333 4.66699" stroke="#A4A7AE" stroke-linecap="round" stroke-linejoin="round"/>
                       </svg>
                       Restart'.html_safe, plugin_restart_path(:plugin_key => plugin_info.plugin_key, :plugin_name => plugin_info.plugin_name, :plugin_version => plugin_info.version), :method => :post, :title => 'Restart', :remote => true, :class => 'plugin-link' %>
+                  <% plugin_config_modal_id = "plugin_config_modal_#{plugin_info.plugin_name.gsub(/[^a-zA-Z0-9]/, '_')}" %>
+                  <a href="#<%= plugin_config_modal_id %>"
+                     class="plugin-link"
+                     data-bs-toggle="modal"
+                     data-bs-target="#<%= plugin_config_modal_id %>">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M8 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" stroke="#A4A7AE" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M13.293 8.58A5.36 5.36 0 0 0 13.333 8a5.36 5.36 0 0 0-.04-.58l1.254-.98a.333.333 0 0 0 .08-.42l-1.187-2.053a.333.333 0 0 0-.406-.147l-1.48.593a4.693 4.693 0 0 0-1-.58L10.333 2.4A.333.333 0 0 0 10 2.067H7.667A.333.333 0 0 0 7.333 2.4l-.22 1.413a4.693 4.693 0 0 0-1 .58l-1.48-.593a.333.333 0 0 0-.406.147L3.04 6.02a.333.333 0 0 0 .08.42l1.254.98A5.464 5.464 0 0 0 4.333 8a5.464 5.464 0 0 0 .04.58L3.12 9.56a.333.333 0 0 0-.08.42l1.187 2.053c.08.147.253.2.406.147l1.48-.593c.307.22.64.42 1 .58l.22 1.413c.04.187.187.32.334.32H10a.333.333 0 0 0 .333-.32l.22-1.413a4.693 4.693 0 0 0 1-.58l1.48.593c.153.053.327 0 .406-.147l1.187-2.053a.333.333 0 0 0-.08-.42l-1.253-.98z" stroke="#A4A7AE" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg> Config
+                  </a>
                   <% if !plugin_info.version.nil? && has_kpm_plugin %>
                     <%= link_to '<svg width="16" height="16" viewBox="0 0 448 512" fill="#A4A7AE" xmlns="http://www.w3.org/2000/svg">
                       <path d="M224 32C217.7 32 211.7 34.5 207 39L23 223C13.7 232.2 13.7 247.8 23 257C32.2 266.3 47.8 266.3 57 257L224 90.98L391 257C400.2 266.3 415.8 266.3 425 257C434.3 247.8 434.3 232.2 425 223L241 39C236.3 34.5 230.3 32 224 32ZM64 320C55.16 320 48 327.2 48 336V368C48 376.8 55.16 384 64 384H384C392.8 384 400 376.8 400 368V336C400 327.2 392.8 320 384 320H64Z"/>
@@ -59,6 +69,18 @@
     <% end %>
   <% end %>
 </div>
+
+<%# Render plugin config modals once per unique plugin name to avoid duplicate DOM ids in multi-node setups %>
+<% rendered_modal_names = [] %>
+<% nodes_info.each do |node_info| %>
+  <% (node_info.plugins_info || []).each do |plugin_info| %>
+    <% next unless plugin_info.state == 'RUNNING' %>
+    <% next if rendered_modal_names.include?(plugin_info.plugin_name) %>
+    <% rendered_modal_names << plugin_info.plugin_name %>
+    <%= render partial: 'kpm/nodes_info/form_plugin_config',
+               locals: { plugin_info: plugin_info, tenant_plugin_config: tenant_plugin_config } %>
+  <% end %>
+<% end %>
 
 <%= javascript_tag do %>
   function toggleDropdown(button) {

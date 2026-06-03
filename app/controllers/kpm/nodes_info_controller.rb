@@ -29,6 +29,17 @@ module KPM
 
       @kb_host = params[:kb_host] || KillBillClient::API.base_uri
       @last_event_id = params[:last_event_id]
+
+      @tenant_plugin_config = {}
+      begin
+        raw_tenant_config = ::KillBillClient::Model::Tenant.search_tenant_config('PLUGIN_CONFIG_', options_for_klient)
+        @tenant_plugin_config = raw_tenant_config.each_with_object({}) do |e, hsh|
+          plugin_name = e.key.gsub('PLUGIN_CONFIG_', '')
+          hsh[plugin_name] = e.values[0]
+        end
+      rescue StandardError => e
+        Rails.logger.warn("Unable to fetch tenant plugin config: #{e.inspect}")
+      end
     end
 
     def refresh
@@ -94,6 +105,34 @@ module KPM
     def stop_plugin
       trigger_node_plugin_command('STOP_PLUGIN')
       head :ok
+    end
+
+    def upload_plugin_config
+      plugin_name = params[:plugin_name]
+      plugin_config = params[:plugin_config]
+
+      if plugin_name.blank?
+        flash[:error] = 'Plugin name cannot be blank'
+      elsif plugin_config.blank?
+        flash[:error] = 'Plugin configuration cannot be blank'
+      else
+        begin
+          user = current_tenant_user
+          ::KillBillClient::Model::Tenant.upload_tenant_plugin_config(
+            plugin_name,
+            plugin_config.gsub(/\r\n?/, "\n"),
+            user[:username],
+            nil,
+            nil,
+            options_for_klient
+          )
+          flash[:notice] = 'Plugin configuration was successfully uploaded'
+        rescue StandardError => e
+          flash[:error] = "Failed to upload plugin configuration: #{e.message}"
+        end
+      end
+
+      redirect_to nodes_info_index_path
     end
 
     def restart_plugin
