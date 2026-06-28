@@ -1,3 +1,5 @@
+<%= render :partial => 'kpm/nodes_info/multi_functions_bar' %>
+
 <table id="logs-table" class="">
   <thead>
   <tr>
@@ -42,7 +44,14 @@
 
     var kbHostForm = $('#kb_host-form').detach();
     var leftOfSearchBox = $("#logs-table_wrapper > div:nth-child(1) > div:nth-child(1)");
+    leftOfSearchBox.addClass('d-flex align-items-center');
     kbHostForm.appendTo(leftOfSearchBox);
     kbHostForm.show();
+
+    var downloadBtn = $('#modalDownloadButton').detach();
+    downloadBtn.addClass('ms-2');
+    var filterDiv = $('#logs-table_filter');
+    filterDiv.css({'display': 'flex', 'align-items': 'center'});
+    filterDiv.append(downloadBtn);
   });
 <% end %>
