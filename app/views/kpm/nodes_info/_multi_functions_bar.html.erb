@@ -1,0 +1,128 @@
+<div class="dropdown-container">
+  <%= render "kaui/components/button/button", {
+    label: "Download JSON",
+    icon: "kaui/download.svg",
+    variant: "outline-secondary d-inline-flex align-items-center gap-1 mx-2",
+    type: "button",
+    html_class: "kaui-button custom-hover",
+    html_options: {
+      id: "modalDownloadButton"
+    }
+  } %>
+</div>
+
+<div class="modal fade" id="downloadJsonModal" tabindex="-1" role="dialog" aria-labelledby="downloadJsonModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title d-flex align-items-center gap-3" id="downloadJsonModalLabel">
+          <span class="icon-container">
+            <%= image_tag("kaui/download.svg") %>
+          </span>
+          Download JSON
+        </h5>
+        <button type="button" class="close close-button custom-hover" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">
+            <%= image_tag("kaui/modal/close.svg", width: 20, height: 20) %>
+          </span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="downloadJsonForm">
+          <div class="row">
+            <div class="d-flex align-items-start">
+              <label class="field-label col-sm-3">Log Level</label>
+              <div class="col-sm-9 level-checkbox-group">
+                <% %w[ERROR WARNING INFO DEBUG].each do |level| %>
+                  <label class="level-checkbox-option">
+                    <input type="checkbox" name="download_level" value="<%= level %>" checked />
+                    <span><%= level %></span>
+                  </label>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <%= render "kaui/components/button/button", {
+          label: 'Close',
+          variant: "outline-secondary d-inline-flex align-items-center gap-1",
+          type: "button",
+          html_class: "kaui-button custom-hover mx-2 my-0",
+          html_options: {
+            data: {
+              bs_dismiss: "modal"
+            },
+          }
+        } %>
+        <%= render "kaui/components/button/button", {
+          label: 'Download JSON',
+          variant: "outline-secondary d-inline-flex align-items-center gap-1",
+          type: "button",
+          html_class: "kaui-dropdown custom-hover m-0",
+          html_options: {
+            id: "downloadButton"
+          }
+        } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= javascript_tag do %>
+$(document).ready(function() {
+  var downloadJsonModalEl = document.getElementById('downloadJsonModal');
+  var downloadJsonModal = new bootstrap.Modal(downloadJsonModalEl);
+
+  $('#modalDownloadButton').click(function() {
+    downloadJsonModal.show();
+  });
+
+  downloadJsonModalEl.addEventListener('show.bs.modal', function () {
+    $('#downloadJsonForm input[name="download_level"]').prop('checked', true);
+  });
+
+  function htmlToText(html) {
+    if (html === null || html === undefined) { return ''; }
+    return $('<div>').html(html).text();
+  }
+
+  $('#downloadButton').on('click', function(e) {
+    e.preventDefault();
+    var table = window.logsDataTable;
+    if (!table) { return; }
+
+    var selectedLevels = $('#downloadJsonForm input[name="download_level"]:checked')
+      .map(function() { return this.value; }).get();
+
+    var rows = [];
+
+    table.rows().every(function() {
+      var data = this.data();
+      if (!data) { return; }
+      var timeText = htmlToText(data[0]).trim();
+      var levelText = htmlToText(data[1]).trim();
+      var messageText = htmlToText(data[2]).trim();
+
+    if (selectedLevels.indexOf(levelText) === -1) { return; }
+
+      rows.push({ time: timeText, level: levelText, message: messageText });
+    });
+
+    var jsonContent = JSON.stringify(rows, null, 2);
+    var blob = new Blob([jsonContent], { type: 'application/json;charset=utf-8;' });
+    var url = URL.createObjectURL(blob);
+    var today = new Date().toISOString().slice(0, 10);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'kpm-logs-' + today + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    downloadJsonModal.hide();
+  });
+});
+<% end %>
