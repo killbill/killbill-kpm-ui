@@ -105,7 +105,7 @@ $(document).ready(function() {
       var levelText = htmlToText(data[1]).trim();
       var messageText = htmlToText(data[2]).trim();
 
-      if (selectedLevels.length > 0 && selectedLevels.indexOf(levelText) === -1) { return; }
+    if (selectedLevels.indexOf(levelText) === -1) { return; }
 
       rows.push({ time: timeText, level: levelText, message: messageText });
     });
