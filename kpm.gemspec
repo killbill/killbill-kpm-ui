@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.files = Dir['{app,config,db,lib}/**/*'] + %w[MIT-LICENSE Rakefile README.md]
 
   s.metadata['rubygems_mfa_required'] = 'true'
-  s.add_dependency 'killbill-assets-ui'
+  s.add_dependency 'killbill-assets-ui', '>= 1.1.0'
   s.add_dependency 'killbill-client'
   s.add_dependency 'ld-eventsource', '~> 1.0.1'
   s.required_ruby_version = '>= 3.1.0'

@@ -58,7 +58,7 @@
     font-weight: 600;
     font-size: 1.125rem;
     line-height: 1.75rem;
-    color: #181d27;
+    color: var(--kb-on-surface-primary);
 }
 
 .kpm-nodes-info-index #downloadJsonModal .close-button {
@@ -77,7 +77,7 @@
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    border: 0.0625rem solid #d5d7da;
+    border: 0.0625rem solid var(--kb-outline-secondary);
     border-radius: 0.375rem;
     width: 2.5rem;
     height: 2.5rem;
@@ -93,7 +93,7 @@
     font-weight: 500;
     font-size: 0.875rem;
     line-height: 1.25rem;
-    color: #414651;
+    color: var(--kb-on-surface-secondary);
     min-width: 9.59375rem;
 }
 
@@ -111,7 +111,7 @@
     font-weight: 500;
     font-size: 0.875rem;
     line-height: 1.25rem;
-    color: #414651;
+    color: var(--kb-on-surface-secondary);
     cursor: pointer;
 }
 
